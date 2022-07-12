@@ -20,7 +20,7 @@ class Application:
         self.master.config(menu=menu)
         
         myMenu = Menu(menu, tearoff=0)
-        myMenu.add_separator()
+        # myMenu.add_separator()
         myMenu.add_command(label="exit", command=self.master.destroy)
 
         menu.add_cascade(label="Menu", menu=myMenu)
