@@ -15,6 +15,17 @@ class Application:
 
         self.price=0.00
 
+        # add menu
+        menu = Menu(self.master)
+        self.master.config(menu=menu)
+        
+        myMenu = Menu(menu, tearoff=0)
+        myMenu.add_separator()
+        myMenu.add_command(label="exit", command=self.master.destroy)
+
+        menu.add_cascade(label="Menu", menu=myMenu)
+        menu.add_cascade(label="Options")
+
         def on_click(event):
             value.configure(state=NORMAL)
             value.delete(0, END)
@@ -48,15 +59,19 @@ class Application:
         )
 
     def qrcode_window(self):
+        cube_s = int(self.configs['DEFAULT']['qrcode_size']) * 49
+
         new_window = Toplevel(self.master)
         # new_window.title("QR Code - R$ " + str(self.price))
         new_window.title("QR Code - R$ 0,00")
-        new_window.geometry(centralize_app(self.master, 490,490))
+        new_window.geometry(centralize_app(self.master, cube_s, cube_s))
         new_window.resizable(False, False)
 
         img= getQRCode(PAYLOAD_PIX).get_image()
         img = ImageTk.PhotoImage(img)
 
+
+        # Há algum problema em fazer Resize
         lb = Label(
             new_window, 
             image=img,
