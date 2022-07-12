@@ -8,8 +8,8 @@ def main():
     return 0;
 
 if (__name__ == "__main__"):
-    # main()
-    try:
-        main()
-    except:
-        print("Erro desconhecido")
+    main()
+    # try:
+    #     main()
+    # except:
+    #     print("Erro desconhecido")
