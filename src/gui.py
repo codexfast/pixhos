@@ -1,54 +1,105 @@
 from tkinter import *
-from typing import Container
+from PIL import Image, ImageTk
+
+from utils.constants import PAYLOAD_PIX
+
+from controllers.qrcodegen import getQRCode
+from controllers.loadconfig import configs
 
 class Application:
     def __init__(self, master=None):
+        self.configs = configs()
+
         self.fonte = ("Verdana", "8")
         self.master = master
 
+        self.price=0.00
 
-        self.container2 = Frame(master)
-        self.container2["padx"] = 20
-        self.container2["pady"] = 5
-        self.container2.pack()
+        def on_click(event):
+            value.configure(state=NORMAL)
+            value.delete(0, END)
 
-        self.container3 = Frame(master)
-        self.container3["padx"] = 20
-        self.container3["pady"] = 5
-        self.container3.pack()
-        
-        self.container4 = Frame(master)
-        self.container4["padx"] = 20
-        self.container4["pady"] = 5
-        self.container4.pack()
-        
-        self.lblidusuario = Label(self.containers([{'padx':20, 'padx': 5}]),
-        text="VALOR", font=self.fonte, width=10)
-        self.lblidusuario.pack(side=LEFT)
+            # make the callback only work once
+            value.unbind('<Button-1>', on_click_id)
 
-        # self.lblidusuario = Label(self.container2,
-        # text="VALOR", font=self.fonte, width=10)
-        # self.lblidusuario.pack(side=LEFT)
+        def get_value_and_gen():
+            price = value.get()
+            
+            self.qrcode_window()
 
-        self.txtidusuario = Entry(self.container2)
-        self.txtidusuario["width"] = 10
-        self.txtidusuario["font"] = self.fonte
-        self.txtidusuario.pack(side=LEFT)
+        value = Entry(master, justify=RIGHT, width=28)
+        value.insert(0, '0.00')
+        value.configure(state=DISABLED)
 
-        self.btnBuscar = Button(self.container2, text="Gerar",
-        font=self.fonte, width=10)
-        self.btnBuscar.pack(side=RIGHT)
+        value.pack(
+            side=LEFT,
+            padx=15, 
+            ipady=8,
+            ipadx=8
+        )
 
-    def containers (self, containerConf):
+        on_click_id = value.bind('<Button-1>', on_click)
 
-        print(containerConf)
-        container = Frame(self.master)
-        # container.update(containerConf) 
-        # container
+        Button(master, text='Gerar', command=get_value_and_gen).pack(
+            side=LEFT,
+            padx=5,
+            ipady=8,
+            ipadx=12
+        )
 
-        return container.pack()
+    def qrcode_window(self):
+        new_window = Toplevel(self.master)
+        # new_window.title("QR Code - R$ " + str(self.price))
+        new_window.title("QR Code - R$ 0,00")
+        new_window.geometry(centralize_app(self.master, 490,490))
+        new_window.resizable(False, False)
 
+        img= getQRCode(PAYLOAD_PIX).get_image()
+        img = ImageTk.PhotoImage(img)
 
-root = Tk()
-Application(root)
-root.mainloop()
+        lb = Label(
+            new_window, 
+            image=img,
+            # width=300,
+            # height=300,
+            # justify=CENTER,
+        )
+
+        lb.image = img
+        lb.pack()
+
+def centralize_app(root, wHeigth, wWidth):
+
+    # get the screen dimension
+    screen_width = root.winfo_screenwidth()
+    screen_height = root.winfo_screenheight()
+
+    # find the center point
+    center_x = int(screen_width/2 - wWidth / 2)
+    center_y = int(screen_height/2 - wHeigth / 2)
+
+    return '{}x{}+{}+{}'.format(wWidth, wHeigth, center_x, center_y)
+
+def initialize():
+    root = Tk()
+    Application(root)
+
+    # set dimension
+    window_height = 100
+    window_width = 300
+
+    # get the screen dimension
+    screen_width = root.winfo_screenwidth()
+    screen_height = root.winfo_screenheight()
+
+    # find the center point
+    center_x = int(screen_width/2 - window_width / 2)
+    center_y = int(screen_height/2 - window_height / 2)
+
+    root.title('Pixhos')
+    root.resizable(False, False)
+    # root.attributes('-topmost', 1)
+    root.geometry('{}x{}+{}+{}'.format(window_width, window_height, center_x, center_y))
+
+    root.mainloop()
+    return 0;
