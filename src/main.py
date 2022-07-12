@@ -1,18 +1,23 @@
-# Pixhos
-# App para geração de QR Code de Pix com valor dinâmico
+## Pixhos
+## App para geração de QR Code de Pix com valor dinâmico
 
-from utils.constants import PAYLOAD_PIX
+# from utils.constants import PAYLOAD_PIX
 
-from controllers.qrcodegen import getQRCode
-from controllers.loadconfig import configs
+# from controllers.qrcodegen import getQRCode
+# from controllers.loadconfig import configs
+
+from gui import initialize as init
 
 def main():
-	# qrcode = getQRCode(PAYLOAD_PIX)
-    # return getQRCode(PAYLOAD_PIX).save('./qrcode/qrcode.png')
+    # cfg = configs()
+    # print(cfg['DEFAULT']['printer'])
 
-    print(configs().sections())
-
+    init()
     return 0;
 
 if (__name__ == "__main__"):
     main()
+    # try:
+    #     main()
+    # except:
+    #     print("Erro desconhecido")
