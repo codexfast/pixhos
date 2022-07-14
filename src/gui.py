@@ -59,7 +59,7 @@ class Application:
             value.delete(0, END)
 
             # make the callback only work once
-            value.unbind('<Button-1>', on_click_id)
+            # value.unbind('<Button-1>', on_click_id)
 
         def get_value_and_gen():
             price = value.get()
