@@ -48,6 +48,15 @@ class Application:
             )
 
         printers.add_cascade(label="lista", menu=printers_list)
+        printers.add_cascade(
+            label="Test prt", 
+            command=
+                lambda: 
+                    _print(
+                        self.configs['DEFAULT']['printer'],
+                        b'test'
+                    )
+        )
         #------
 
         menu.add_cascade(label="Menu", menu=myMenu)
