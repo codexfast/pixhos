@@ -1,6 +1,6 @@
 from email.policy import default
 from hashlib import new
-from turtle import title
+from turtle import title, width
 import pyperclip as pc
 import subprocess as sp
 
@@ -99,13 +99,17 @@ class Application:
         )
 
     def qrcode_window(self):  
+        img= getQRCode(PAYLOAD_PIX).get_image()
+
         default_print = self.configs['DEFAULT']['printer']      
-        cube_s = int(self.configs['DEFAULT']['qrcode_size']) * 49
+        # cube_s = int(self.configs['DEFAULT']['qrcode_size']) * int(img.size[0]/10)
+
+        w,h = img.size;
 
         new_window = Toplevel(self.master)
         # new_window.title("QR Code - R$ " + str(self.price))
         new_window.title("QR Code - R$ 0,00")
-        new_window.geometry(centralize_app(self.master, cube_s, cube_s))
+        new_window.geometry(centralize_app(self.master, w,h))
         new_window.resizable(False, False)
         new_window.iconbitmap(ICONS_PATH["qr16Xico"])
         new_window.focus_force()
@@ -128,10 +132,7 @@ class Application:
                     print("Na teoria ia imprimir em", default_print)
         )
 
-
-        img= getQRCode(PAYLOAD_PIX).get_image()
-        img = ImageTk.PhotoImage(img)
-
+        img = ImageTk.PhotoImage(img) # Transform to PhotoImage
 
         # Há algum problema em fazer Resize
         lb = Label(
