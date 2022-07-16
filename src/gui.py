@@ -1,6 +1,3 @@
-from email.policy import default
-from hashlib import new
-from turtle import title, width
 import pyperclip as pc
 import subprocess as sp
 

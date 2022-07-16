@@ -8,8 +8,8 @@ def getQRCode(payload: str) -> qrcode:
     qr = qrcode.QRCode(
         version=1,
         error_correction=qrcode.constants.ERROR_CORRECT_M,
-        box_size=int(cfg['DEFAULT']['qrcode_size']) or 7,
-        border=4,
+        box_size=int(cfg['DEFAULT']['qrcode_size']) | 7,
+        border=int(cfg['DEFAULT']['qrcode_border']) | 4,
     )
 
     qr.add_data(payload)
