@@ -2,7 +2,7 @@ import pyperclip as pc
 import subprocess as sp
 
 from tkinter import *
-from PIL import Image, ImageTk
+from PIL import ImageTk
 
 from utils.constants import PAYLOAD_PIX
 from utils.constants import ICONS_PATH
