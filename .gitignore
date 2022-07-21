@@ -3,6 +3,7 @@ pixhos.zip
 temp/
 *.db
 *.db-journal
+test.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

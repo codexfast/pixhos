@@ -1,6 +1,8 @@
+from gzip import READ
 from tkinter import *
 from tkinter import messagebox
 from tkinter import ttk
+from turtle import left
 from PIL import ImageTk
 
 from utils.constants import PAYLOAD_PIX
@@ -170,10 +172,74 @@ class Application:
 
         Label(new_window, text=message, width=120).place(relx=.5, rely=.5, anchor= CENTER)
 
+    def create_input_frame2(self, container):
+
+        frame = ttk.Frame(container)
+
+        # grid layout for the input frame
+        frame.columnconfigure(0, weight=1)
+        frame.columnconfigure(0, weight=4)
+
+        # prt default
+        ttk.Label(frame, text='Impressora:').grid(column=0, row=0, sticky=W)
+        keyword = ttk.Entry(frame, width=30)
+        keyword.focus()
+        keyword.grid(column=1, row=0, sticky=W)
+
+        # QRcode size:
+        ttk.Label(frame, text='Tamanho (QRcode)').grid(column=0, row=1, sticky=W)
+        replacement = ttk.Entry(frame, width=30)
+        replacement.grid(column=1, row=1, sticky=W)
+
+        # Qrcode Border size:
+        ttk.Label(frame, text='Tamanho Borda (QRcode)').grid(column=0, row=2, sticky=W)
+        replacement = ttk.Entry(frame, width=30)
+        replacement.grid(column=1, row=2, sticky=W)
+
+        # Match Case checkbox
+        # match_case = StringVar()
+        # match_case_check = ttk.Checkbutton(
+        #     frame,
+        #     text='Match case',
+        #     variable=match_case,
+        #     command=lambda: print(match_case.get()))
+        # match_case_check.grid(column=0, row=2, sticky=W)
+
+        # # Wrap Around checkbox
+        # wrap_around = StringVar()
+        # wrap_around_check = ttk.Checkbutton(
+        #     frame,
+        #     variable=wrap_around,
+        #     text='Wrap around',
+        #     command=lambda: print(wrap_around.get()))
+        # wrap_around_check.grid(column=0, row=3, sticky=W)
+
+        for widget in frame.winfo_children():
+            widget.grid(padx=0, pady=5)
+
+        return frame
+        
+    def create_button_frame2(self, container):
+        frame = ttk.Frame(container)
+
+        frame.columnconfigure(0, weight=1)
+
+        ttk.Button(frame, text='Salvar').grid(column=0, row=0)
+        ttk.Button(frame, text='Testar Imp').grid(column=0, row=1)
+
+        for widget in frame.winfo_children():
+            widget.grid(padx=0, pady=3)
+
+        return frame
+
+
     def config_window(self):
+        w = 390
+        h = 250
+
         new_window = Toplevel(self.master)
         new_window.title("Configurações")
-        new_window.geometry(centralize_app(self.master, 250, 390))
+        new_window.geometry(centralize_app(self.master, h, w))
         new_window.resizable(False, False)
         new_window.iconbitmap(ICONS_PATH["qr16Xico"])
         new_window.grab_set()
@@ -183,8 +249,8 @@ class Application:
 
         
         # create frames
-        frame1 =Frame(notebook, width=400, height=280)
-        frame2 =Frame(notebook, width=400, height=280)
+        frame1 =Frame(notebook, width=w, height=h)
+        frame2 =Frame(notebook, width=w, height=h)
 
         frame1.pack(fill='both', expand=True)
         frame2.pack(fill='both', expand=True)
@@ -194,7 +260,78 @@ class Application:
         notebook.add(frame1, text='Pixhos')
         notebook.add(frame2, text='Impressora')
 
-        Label(frame1, text="ALAAL", width=120).place(relx=.5, rely=.5, anchor= CENTER)
+        # layout frame 2
+        frame2.columnconfigure(0, weight=4)
+        frame2.columnconfigure(1, weight=1)
+
+        input_frame = self.create_input_frame2(frame2)
+        input_frame.grid(column=0, row=0)
+
+        button_frame = self.create_button_frame2(frame2)
+        button_frame.grid(column=1, row=0)
+
+        # Printers
+        # lb_select_prt = Label(frame2, text="Impressora Padrão", background="RED")
+                
+        # selected_prt = StringVar()
+        # prt_cb = ttk.Combobox(frame2, textvariable=selected_prt)
+
+        # # get first 3 letters of every prt name
+        # prt_cb['values'] = list(map(lambda x: x[2],getPrinters()))
+
+        # # prevent typing a value
+        # prt_cb['state'] = 'readonly'
+
+        # # bind the selected value changes
+        # def prt_changed(event):
+        #     print(selected_prt.get())
+
+        # prt_cb.bind('<<ComboboxSelected>>', prt_changed)
+
+        # # spinbox
+        # lb_qrcode_size = Label(frame2, text="Tamanho (QRcode)")
+        # qrcode_size_value = StringVar()
+        # qrcode_size_spin_box = ttk.Spinbox(
+        #     frame2,
+        #     from_=0,
+        #     to=12,
+        #     # values=(0, 10, 20, 30, 40, 50),
+        #     textvariable=qrcode_size_value,
+        #     state = 'readonly'
+        #     )
+
+        # spinbox
+        # lb_qrcode_border = Label(frame2, text="Tamanho Borda (QRcode)")
+
+        # qrcode_border_value = StringVar()
+        # qrcode_border_spin_box = ttk.Spinbox(
+        #     frame2,
+        #     from_=0,
+        #     to=12,
+        #     # values=(0, 10, 20, 30, 40, 50),
+        #     textvariable=qrcode_border_value,
+        #     state = 'readonly'
+        #     )
+
+        # GRID
+        # lb_select_prt,
+        # qrcode_border_spin_box,
+        # qrcode_size_spin_box,
+        # prt_cb
+
+        # lb_select_prt.grid(row=0, column=0, padx=5,pady=5)
+        # prt_cb.grid(row=0, column=1, padx=5,pady=5, columnspan=1)
+
+        # lb_qrcode_border.grid(row=1, column=0, padx=5,pady=5)
+        # qrcode_border_spin_box.grid(row=1, column=1, padx=5,pady=5)
+        
+        # lb_qrcode_size.grid(row=2, column=0, padx=5,pady=5)
+        # qrcode_size_spin_box.grid(row=2, column=1, padx=5,pady=5)
+        
+
+        # ----- end printers
+
+        
 
 
         
