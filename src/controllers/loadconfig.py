@@ -1,12 +1,25 @@
-import configparser
+from model.sqlite import BasePixhos
 
-files = ['config.ini']
+def set_config(prt_default: str, qrcode_size: int, qrcode_border: int):
+	try:
+		base = BasePixhos();
+		base.update_config(prt_default, qrcode_size, qrcode_border)
+		
+		return True
+	except:
+		return False
 
-def configs () -> dict:
-	config = configparser.ConfigParser()
-	dataset = config.read(files)
+def insert_config(prt_default: str, qrcode_size: int, qrcode_border: int):
+	base = BasePixhos()
+	base.insert_config()
+	try:
+		base = BasePixhos();	
+		base.insert_config(prt_default, qrcode_size, qrcode_border)
+		return True
+	except:
+		return False
 
-	if (len(dataset)!=len(files)):
-		raise IOError("Config files not found")
+def db_config():
+	base = BasePixhos()
 
-	return config
+	return base.config

@@ -2,7 +2,7 @@ import sqlite3
 
 class BasePixhos():
     def __init__(self):
-        self.con = sqlite3.connect("base.db")
+        self.con = sqlite3.connect("pixhos.db")
         self.cur = self.con.cursor()
 
         self.__create_tables()
@@ -29,7 +29,7 @@ class BasePixhos():
         )""")
 
     def __insert_default(self) -> None:
-        # self.cur.execute("INSERT INTO config (prt_default, qrcode_border, qrcode_size) VALUES ('Fax', 4, 7)")
+        self.cur.execute("INSERT INTO config (prt_default, qrcode_border, qrcode_size) VALUES ('Fax', 4, 7)")
         self.cur.execute("INSERT INTO pixhos (id, name, city, key_type, key, amount, reference, payload) VALUES (null, '', '', '', '', null, null, null)")
         self.con.commit()
 

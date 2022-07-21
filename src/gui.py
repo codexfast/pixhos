@@ -1,20 +1,21 @@
-import pyperclip as pc
-import subprocess as sp
-
 from tkinter import *
+from tkinter import messagebox
+from tkinter import ttk
 from PIL import ImageTk
 
 from utils.constants import PAYLOAD_PIX
 from utils.constants import ICONS_PATH
 
 from controllers.qrcodegen import getQRCode
-from controllers.loadconfig import configs
+from controllers.loadconfig import db_config
+from controllers.pixhos import db_pixhos
 from controllers.goprint import getPrinters
 from controllers.goprint import _print
 
 class Application:
     def __init__(self, master=None):
-        self.configs = configs()
+        self.configs = db_config()
+        self.pixhos = db_pixhos()
 
         self.fonte = ("Verdana", "8")
         self.master = master
@@ -27,7 +28,7 @@ class Application:
         
         # Menu
         myMenu = Menu(menu, tearoff=0)
-        myMenu.add_command(label="Configurações", command=openConfigFile)
+        myMenu.add_command(label="Configurações", command=self.config_window)
         myMenu.add_separator()
         myMenu.add_command(label="exit", command=self.master.destroy)
 
@@ -37,20 +38,28 @@ class Application:
 
         # script prog exec
         # prog = f'printers_list.add_command(label=_[2], command=pc.copy(_[2]) )'
-        for _ in getPrinters():
+        my_printers = getPrinters()
+        control = [BooleanVar() for x in range(len(my_printers))]
+
+        for i, _ in enumerate(my_printers):
+            print(i,_[2])
             # exec(prog)
-            printers_list.add_command(
-                label=_[2], 
-                command=lambda: pc.copy(_[0])
+            printers_list.add_checkbutton(
+                label=_[2],
+                onvalue=1, offvalue=0,
+                variable=control[i],
+                # command=lambda: pc.copy(_[2])
+                # command=set_prt(this)
             )
 
-        printers.add_cascade(label="lista", menu=printers_list)
+        printers.add_cascade(label="padrão", menu=printers_list)
         printers.add_cascade(
-            label="Test prt", 
+            label=f'Testar {self.configs["prt_default"] if self.configs != None else "impressora"}',
+            state=DISABLED if not self.configs else None,
             command=
                 lambda: 
                     _print(
-                        self.configs['DEFAULT']['printer'],
+                        self.configs['prt_default'],
                         b'test'
                     )
         )
@@ -67,10 +76,13 @@ class Application:
             # make the callback only work once
             # value.unbind('<Button-1>', on_click_id)
 
-        def get_value_and_gen():
+        def generate():
             price = value.get()
-            
-            self.qrcode_window()
+
+            if not self.configs or not self.pixhos:
+                messagebox.showwarning("showwarning", "Configurações/Qrcode não configurado!")
+            else:
+                self.qrcode_window()
 
         value = Entry(master, justify=RIGHT, width=27)
         value.insert(0, '0.00')
@@ -88,7 +100,7 @@ class Application:
         #Icon
         qrcodeicon=PhotoImage("./assets/qrcode-16x.png")
 
-        Button(master, text='Gerar', command=get_value_and_gen).pack(
+        Button(master, text='Gerar', command=generate).pack(
             side=LEFT,
             padx=5,
             ipady=8,
@@ -98,7 +110,7 @@ class Application:
     def qrcode_window(self):  
         img= getQRCode(PAYLOAD_PIX).get_image()
 
-        default_print = self.configs['DEFAULT']['printer']      
+        default_print = self.configs['prt_default']      
         # cube_s = int(self.configs['DEFAULT']['qrcode_size']) * int(img.size[0]/10)
 
         w,h = img.size;
@@ -110,6 +122,8 @@ class Application:
         new_window.resizable(False, False)
         new_window.iconbitmap(ICONS_PATH["qr16Xico"])
         new_window.focus_force()
+        new_window.grab_set()
+
 
         # event -> press return
         new_window.bind(
@@ -149,15 +163,41 @@ class Application:
         new_window.geometry(centralize_app(self.master, 125, 250))
         new_window.resizable(False, False)
         new_window.iconbitmap(ICONS_PATH["qr16Xico"])
+        new_window.grab_set()
+
 
         message="""App para geração/impressão de pix\r\n dinânimo\r\n\r\nDesenvolvido por codexfast"""
 
         Label(new_window, text=message, width=120).place(relx=.5, rely=.5, anchor= CENTER)
 
-def openConfigFile():
-    programName = "notepad.exe" 
-    fileName = "config.ini"
-    sp.Popen([programName, fileName])
+    def config_window(self):
+        new_window = Toplevel(self.master)
+        new_window.title("Configurações")
+        new_window.geometry(centralize_app(self.master, 250, 390))
+        new_window.resizable(False, False)
+        new_window.iconbitmap(ICONS_PATH["qr16Xico"])
+        new_window.grab_set()
+
+        notebook = ttk.Notebook(new_window)
+        notebook.pack(expand=True)
+
+        
+        # create frames
+        frame1 =Frame(notebook, width=400, height=280)
+        frame2 =Frame(notebook, width=400, height=280)
+
+        frame1.pack(fill='both', expand=True)
+        frame2.pack(fill='both', expand=True)
+
+        # add frames to notebook
+
+        notebook.add(frame1, text='Pixhos')
+        notebook.add(frame2, text='Impressora')
+
+        Label(frame1, text="ALAAL", width=120).place(relx=.5, rely=.5, anchor= CENTER)
+
+
+        
 
 def centralize_app(root, wHeigth, wWidth):
 

@@ -1,15 +1,14 @@
-from controllers.loadconfig import configs
-
+from controllers.loadconfig import db_config
 import qrcode
 
 def getQRCode(payload: str) -> qrcode:
+    cfg = db_config()
 
-    cfg = configs()
     qr = qrcode.QRCode(
         version=1,
         error_correction=qrcode.constants.ERROR_CORRECT_M,
-        box_size=int(cfg['DEFAULT']['qrcode_size']) | 7,
-        border=int(cfg['DEFAULT']['qrcode_border']) | 4,
+        box_size=int(cfg['qrcode_size']),
+        border=int(cfg['qrcode_border']),
     )
 
     qr.add_data(payload)
