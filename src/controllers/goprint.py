@@ -2,7 +2,6 @@
 import win32.win32print as win32print
 from escpos.printer import Network
 
-
 def _print(printer, _raw):
     prt = win32print.OpenPrinter(printer)
 
