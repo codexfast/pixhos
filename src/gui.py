@@ -1,8 +1,7 @@
-from gzip import READ
+
 from tkinter import *
 from tkinter import messagebox
 from tkinter import ttk
-from turtle import left
 from PIL import ImageTk
 
 from utils.constants import PAYLOAD_PIX
@@ -82,7 +81,7 @@ class Application:
             price = value.get()
 
             if not self.configs or not self.pixhos:
-                messagebox.showwarning("showwarning", "Configurações/Qrcode não configurado!")
+                messagebox.showwarning("Atenção!", "Configurações/Qrcode não configurado!")
             else:
                 self.qrcode_window()
 
@@ -182,19 +181,46 @@ class Application:
 
         # prt default
         ttk.Label(frame, text='Impressora:').grid(column=0, row=0, sticky=W)
-        keyword = ttk.Entry(frame, width=30)
-        keyword.focus()
-        keyword.grid(column=1, row=0, sticky=W)
+        # keyword = ttk.Entry(frame, width=30)
+        
+        selected_prt = StringVar()
+        cb_prt=ttk.Combobox(frame, textvariable=selected_prt, width=25)
+        cb_prt['values'] = list(map(lambda x: x[2],getPrinters()))
+        cb_prt.grid(column=1, row=0, sticky=W)
+
 
         # QRcode size:
         ttk.Label(frame, text='Tamanho (QRcode)').grid(column=0, row=1, sticky=W)
-        replacement = ttk.Entry(frame, width=30)
-        replacement.grid(column=1, row=1, sticky=W)
+        # replacement = ttk.Entry(frame, width=30)
+        qrcode_size_value = StringVar()
+        qrcode_size_spin_box = ttk.Spinbox(
+            frame,
+            from_=2,
+            to=12,
+            # values=(0, 10, 20, 30, 40, 50),
+            textvariable=qrcode_size_value,
+            state = 'readonly',
+            width=25
+            )
+        qrcode_size_spin_box.grid(column=1, row=1, sticky=W)
 
         # Qrcode Border size:
-        ttk.Label(frame, text='Tamanho Borda (QRcode)').grid(column=0, row=2, sticky=W)
-        replacement = ttk.Entry(frame, width=30)
-        replacement.grid(column=1, row=2, sticky=W)
+        ttk.Label(frame, text='Borda (QRcode)').grid(column=0, row=2, sticky=W)
+        
+        qrcode_border_value = StringVar()
+        qrcode_border_value.set(2)
+        qrcode_border_spin_box = ttk.Spinbox(
+            frame,
+            from_=2,
+            to=12,
+            # values=(0, 10, 20, 30, 40, 50),
+            textvariable=qrcode_border_value,
+            state = 'readonly',
+            width=25,
+            
+            )
+        qrcode_border_spin_box.focus()
+        qrcode_border_spin_box.grid(column=1, row=2, sticky=W)
 
         # Match Case checkbox
         # match_case = StringVar()
