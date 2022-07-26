@@ -12,10 +12,10 @@ class PrintTemplate(metaclass=abc.ABCMeta):
         self.cut()
 
     def pixhos(self, payload, amount, name, key):
-        self.textln(GoPrint.espaceBetween("PIX", f"R${amount}"))
+        self.textln(GoPrint.spaceBetween("PIX", f"R${amount}"))
         self.qr(payload, size=6)
-        self.textln(GoPrint.espaceBetween("", key))
-        self.textln(GoPrint.espaceBetween("", name))
+        self.textln(GoPrint.spaceBetween("", key))
+        self.textln(GoPrint.spaceBetween("", name))
         self.cut()
 
 
@@ -27,7 +27,7 @@ class GoPrint(Network, PrintTemplate):
             print(f'Conection Error [{host}]')
 
     @staticmethod
-    def espaceBetween(text1:str, text2:str, width:int =25) -> str:
+    def spaceBetween(text1:str, text2:str, width:int =25) -> str:
 
         if (len(text1) + len(text2)) > width: raise Exception(f'Text is long, max width: {width}')
 
@@ -48,7 +48,7 @@ class GoPrint(Network, PrintTemplate):
         self.textln('Right text')
         self.set(align='left')
         self.textln('Left text')
-        self.textln(self.espaceBetween("Left", "Right"))
+        self.textln(self.spaceBetween("Left", "Right"))
         self.cut()
 
     def __del__(self): pass
