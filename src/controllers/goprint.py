@@ -12,7 +12,7 @@ class PrintTemplate(metaclass=abc.ABCMeta):
         self.cut()
 
     def pixhos(self, payload, amount, name, key):
-        self.textln(GoPrint.spaceBetween("PIX", f"R${amount}"))
+        self.textln(GoPrint.spaceBetween("PIX", f"R$ {amount}"))
         self.qr(payload, size=6)
         self.textln(GoPrint.spaceBetween("", key))
         self.textln(GoPrint.spaceBetween("", name))
